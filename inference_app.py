@@ -1,17 +1,18 @@
 # inference script for the model
-# use argparse for input arguments and data
+from fastapi import FastAPI
+import joblib
+import numpy as np
 
-# load the pickled model
-# load the JSON list of features
-# load the input data
-# call the predict method
+
+app = FastAPI()
+
 
 # Path: test_inference.py
 import json
 import pickle
 import pathlib
 
-import pandas
+import pandas as pd
 
 # load pickeld model
 prince_model = pickle.load(open("model.pkl", "rb"))

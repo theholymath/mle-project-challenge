@@ -5,7 +5,7 @@ import joblib
 from typing import List
 from typing import Tuple
 
-import pandas
+import pandas as pd
 import numpy as np
 from sklearn import model_selection
 from sklearn import neighbors
@@ -13,26 +13,12 @@ from sklearn import pipeline
 from sklearn import preprocessing
 from sklearn import metrics
 
-SALES_PATH = "data/kc_house_data.csv"  # path to CSV with home sale data
-DEMOGRAPHICS_PATH = "data/zipcode_demographics.csv"  # path to CSV with demographics
-# List of columns (subset) that will be taken from home sale data
-SALES_COLUMN_SELECTION = [
-    "price",
-    "bedrooms",
-    "bathrooms",
-    "sqft_living",
-    "sqft_lot",
-    "floors",
-    "sqft_above",
-    "sqft_basement",
-    "zipcode",
-]
-OUTPUT_DIR = "model"  # Directory where output artifacts will be saved
+from config import SALES_PATH, DEMOGRAPHICS_PATH, SALES_COLUMN_SELECTION, OUTPUT_DIR
 
 
 def load_data(
     sales_path: str, demographics_path: str, sales_column_selection: List[str]
-) -> Tuple[pandas.DataFrame, pandas.Series]:
+) -> Tuple[pd.DataFrame, pd.Series]:
     """Load the target and feature data by merging sales and demographics.
 
     Args:
@@ -47,16 +33,15 @@ def load_data(
         series contains the target variable (home sale price).
 
     """
-    data = pandas.read_csv(
+    data = pd.read_csv(
         sales_path, usecols=sales_column_selection, dtype={"zipcode": str}
     )
-    demographics = pandas.read_csv(demographics_path, dtype={"zipcode": str})
+    demographics = pd.read_csv(demographics_path, dtype={"zipcode": str})
 
     merged_data = data.merge(demographics, how="left", on="zipcode").drop(
         columns="zipcode"
     )
     # Remove the target variable from the dataframe, features will remain
-    print(merged_data.head())
     y = merged_data.pop("price")
     x = merged_data
 
@@ -92,13 +77,12 @@ def main():
 
     # predict model on test data and output predictions and perfomance metrics
     y_pred = model.predict(x_test)
-    pandas.DataFrame(y_pred).to_csv(output_dir / "y_pred.csv", index=False)
-    pandas.DataFrame({"y_test": y_test, "y_pred": y_pred}).to_csv(
+    pd.DataFrame(y_pred).to_csv(output_dir / "y_pred.csv", index=False)
+    pd.DataFrame({"y_test": y_test, "y_pred": y_pred}).to_csv(
         output_dir / "y_test_y_pred.csv", index=False
     )
 
     # evalute model performance
-
     print("MAE:", metrics.mean_absolute_error(y_test, y_pred))
     print("MSE:", metrics.mean_squared_error(y_test, y_pred))
     print("RMSE:", np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
