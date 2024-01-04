@@ -1,16 +1,17 @@
-# Use miniconda3 as the base image
-FROM continuumio/miniconda3
+# Use the official Python image
+FROM python:3.9
 
-# Copy the conda environment file and the create_model.py script to the image
-COPY conda_environment.yml /opt/conda_environment.yml
-COPY create_model.py /opt/create_model.py
-COPY data /opt/data
+# Set the working directory in the container
+WORKDIR /app
 
-# Create the conda environment from the file
-RUN conda env create -f /opt/conda_environment.yml
+# Copy the local code to the container
+COPY . .
 
-# Activate the conda environment and run the create_model.py script
-RUN conda run -n housing python /opt/create_model.py
+# Install FastAPI and Uvicorn
+RUN pip install -r requirements.txt
 
-# Save the model as a pickle file
-RUN cp model.pkl /opt/model.pkl
+# Expose the port the app runs on
+EXPOSE 8000
+
+# Command to run the application
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -5,4 +5,6 @@ model/*
 .env
 .venv
 
-test*/
+test_*/
+app.log
+temp.csv

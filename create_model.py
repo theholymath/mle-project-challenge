@@ -2,17 +2,12 @@ import json
 import pathlib
 import pickle
 import joblib
-from typing import List
-from typing import Tuple
-
+from typing import List, Tuple
 import pandas as pd
 import numpy as np
-from sklearn import model_selection
-from sklearn import neighbors
-from sklearn import pipeline
-from sklearn import preprocessing
-from sklearn import metrics
+from sklearn import model_selection, neighbors, pipeline, preprocessing, metrics
 
+# local imports
 from config import SALES_PATH, DEMOGRAPHICS_PATH, SALES_COLUMN_SELECTION, OUTPUT_DIR
 
 
@@ -42,14 +37,27 @@ def load_data(
         columns="zipcode"
     )
     # Remove the target variable from the dataframe, features will remain
-    y = merged_data.pop("price")
-    x = merged_data
+    try:
+        y = merged_data.pop("price")
+        x = merged_data
+    except KeyError:
+        return merged_data, None
 
     return x, y
 
 
 def main():
-    """Load data, train model, and export artifacts."""
+    """
+    This function loads data, trains a model, and exports the trained model and related artifacts.
+
+    Steps:
+    1. Load data from the specified paths and perform train-test split.
+    2. Train a model using the training data.
+    3. Export the trained model in multiple formats (pickle, joblib).
+    4. Export the list of model features to a JSON file.
+    5. Save the training and testing data for future use.
+    6. Make predictions on the test data and evaluate the model's performance.
+    """
     x, y = load_data(SALES_PATH, DEMOGRAPHICS_PATH, SALES_COLUMN_SELECTION)
     x_train, x_test, y_train, y_test = model_selection.train_test_split(
         x, y, random_state=42, test_size=0.2
@@ -83,10 +91,14 @@ def main():
     )
 
     # evalute model performance
-    print("MAE:", metrics.mean_absolute_error(y_test, y_pred))
-    print("MSE:", metrics.mean_squared_error(y_test, y_pred))
-    print("RMSE:", np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
-    print("VarScore:", metrics.explained_variance_score(y_test, y_pred))
+    model_performance_dict = {
+        "MAE": metrics.mean_absolute_error(y_test, y_pred),
+        "MSE": metrics.mean_squared_error(y_test, y_pred),
+        "RMSE": np.sqrt(metrics.mean_squared_error(y_test, y_pred)),
+        "VarScore": metrics.explained_variance_score(y_test, y_pred),
+    }
+    json.dump(model_performance_dict, open(output_dir / "model_performance.json", "w"))
+    print("Model Performance:\n", model_performance_dict)
 
 
 if __name__ == "__main__":
