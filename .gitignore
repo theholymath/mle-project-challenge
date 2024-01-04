@@ -4,6 +4,7 @@ model/*
 
 .env
 .venv
+.vscode
 
 test_*/
 app.log
