@@ -64,6 +64,9 @@ The model relies on the following Python libraries and frameworks (see `requirem
 * joblib
 * pydantic
 
+
+# Tests
+You can run the curl commands in the `tests/curl_commands.txt` to test the API endpoint. The python file runs the commands in the bash script if you want to use python. 
 ---
 
 
