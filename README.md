@@ -1,5 +1,73 @@
-![phData Logo](phData.png "phData Logo")
+![Edith Macefield](assets/up_house.png "Edith Macefield")
+# Home Price Prediction Model with Docker Deployment :house:
 
+This repository contains a Python regression model that predicts home prices in Seattle, WA. The model is deployed using Docker, allowing for easy setup and execution.
+
+## Model Overview with FastAPI
+
+The regression model is built using Python and utilizes sklearns KNN regression for training and inference.
+The `app.py` file contains the implementation of an API using FastAPI to serve a regression model. The API includes endpoints for making predictions and logging the model's activity.
+
+## Files
+
+### create_model.py
+
+The `create_model.py` file contains the main method for training and exporting the regression model. The `main()` method performs the following steps:
+
+1. Load the data and perform any necessary preprocessing.
+2. Train the regression model using the provided dataset.
+3. Export the trained model and related artifacts, including performance metrics.
+
+To run the model, follow the steps below.
+
+## Usage
+
+To run the regression model, follow the steps below:
+
+1. Build the Docker image using the provided Dockerfile:
+   ```bash
+   docker build -t image_name_here .
+   ```
+2. Run the Docker container:
+    ```bash
+    docker run -d -p 8080:8080 image_name_here
+    ```
+3. Once the container is running, send a POST request to the model endpoint to make predictions.
+
+### app.py
+The file begins by importing the necessary libraries and modules, including FastAPI, request handling, logging, and the regression model itself. It also imports the required local modules for data loading and model creation.
+
+The regression model is loaded using joblib and the necessary logging setup is performed to track the API's activity.
+
+The API defines two main endpoints:
+1. **Root Endpoint** (`/`): This endpoint provides a welcome message and logs the access to the root endpoint.
+2. **Prediction Endpoint** (`/predict/`): This endpoint accepts a POST request with input data, processes the data, makes predictions using the loaded model, and returns the predicted price. It also logs the received data, merged request data, and the model's prediction.
+
+The API uses a Pydantic model (`InputData`) to define the structure of the input data for making predictions. The input data includes various features related to the property for which the price prediction is requested.
+
+To use the API, follow these steps:
+1. Build the Docker image using the provided Dockerfile.
+2. Run the Docker container.
+3. Access the API endpoints to make predictions and retrieve model activity logs.
+
+The API provides a simple and efficient way to serve the regression model and make predictions using the defined input data structure.
+
+For detailed information on the model, API endpoints, and usage, refer to the `app.py` file and the associated documentation.
+
+# Dependencies
+The model relies on the following Python libraries and frameworks (see `requirements.txt`):
+* numpy==1.22.4
+* pandas==2.1.1
+* scikit-learn==1.3.1
+* fastapi
+* uvicorn
+* joblib
+* pydantic
+
+---
+
+
+![phData Logo](assets/phData.png "phData Logo")
 # phData Machine Learning Engineer Candidate Project
 
 phData wants the interview process to – as best as possible – reflect

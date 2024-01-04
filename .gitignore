@@ -1,2 +1,10 @@
 model/*
 *.pyc
+.DS_Store
+
+.env
+.venv
+
+test_*/
+app.log
+temp.csv
